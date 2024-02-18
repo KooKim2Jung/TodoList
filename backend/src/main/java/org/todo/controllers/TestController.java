@@ -1,10 +1,12 @@
 package org.todo.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.todo.entities.Test;
 import org.todo.models.TestService;
 
+@Tag(name = "예제 API", description = "Swagger 테스트용 API")
 @RestController
 @RequestMapping("/tests")
 public class TestController {
