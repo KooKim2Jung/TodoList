@@ -17,6 +17,13 @@ services:
       - "3306:3306"
     volumes:
       - mysqldb-data:/var/lib/mysql
+  react:
+    build: ./frontend/my-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - spring
+
 
 volumes:
   mysqldb-data:
