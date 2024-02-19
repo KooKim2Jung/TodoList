@@ -8,7 +8,7 @@ import org.todo.models.TestService;
 
 @Tag(name = "예제 API", description = "Swagger 테스트용 API")
 @RestController
-@RequestMapping("/tests")
+@RequestMapping("api/v1/tests")
 public class TestController {
 
     @Autowired

@@ -3,6 +3,7 @@ package org.todo.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,13 @@ public class SwaggerConfig {
                 .info(apiInfo());
     }
 
+    @Bean
+    public GroupedOpenApi testApi() {
+        return GroupedOpenApi.builder()
+                .group("Tests")
+                .packagesToScan("org.todo.controllers")
+                .build();
+    }
     private Info apiInfo() {
         return new Info()
                 .title("Springdoc 테스트")
