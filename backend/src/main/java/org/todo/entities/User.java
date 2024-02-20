@@ -25,4 +25,8 @@ public class User {
 
     @Column(nullable = false)
     private String phone;
+
+    public void setPhone(String phone) {
+        this.phone = phone.replaceAll("[^0-9]", ""); // 숫자가 아닌 모든 문자 제거
+    }
 }
