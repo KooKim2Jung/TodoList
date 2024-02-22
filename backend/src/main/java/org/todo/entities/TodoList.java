@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name="Task")
 public class TodoList {
     @Id
@@ -22,5 +23,5 @@ public class TodoList {
     private String title;
 
     @Column(nullable = false)
-    private boolean iscompleted;
+    private boolean completed;
 }
