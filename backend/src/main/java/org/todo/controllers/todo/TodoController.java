@@ -19,6 +19,13 @@ public class TodoController {
 
     private final TodoService service;
 
+    /**
+     *  대윤 피드백
+     *  할 일 추가 부분처럼 에러 처리를 하는 부분이 수정, 삭제, 조회에도 있으면 좋을 것 같음
+     *  에러 처리를 하는 과정에서도 상태 코드만 반환해주는 것이 아닌 에러 메세지를 출력하는 것이 좋음
+     *  이해와 수정 후 해당 주석 삭제해도 됨
+     */
+
     //할 일 추가
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TodoRequest request){
@@ -33,17 +40,17 @@ public class TodoController {
     }
 
     //할 일 수정
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody TodoRequest request){
-        service.updateById(id, request);
+    @PutMapping("{listId}")
+    public ResponseEntity<?> update(@PathVariable Long listId, @RequestBody TodoRequest request){
+        service.updateById(listId, request);
 
         return ResponseEntity.ok().build();
     }
 
     //삭제
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteOne(@PathVariable int id){
-        service.deleteById(id);
+    @DeleteMapping("{listId}")
+    public ResponseEntity<?> deleteOne(@PathVariable Long listId){
+        service.deleteById(listId);
 
         return ResponseEntity.ok().build();
     }

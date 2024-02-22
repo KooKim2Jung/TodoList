@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TodoRequest {
     private String title;
-    private boolean completed;
+    private Boolean completed;
 }

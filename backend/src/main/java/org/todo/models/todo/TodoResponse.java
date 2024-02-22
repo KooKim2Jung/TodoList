@@ -9,15 +9,15 @@ import org.todo.entities.TodoList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TodoResponse {
-    private int ListId;
+    private Long ListId;
     private String title;
-    private boolean completed;
+    private Boolean completed;
     private String url;
 
     public TodoResponse(TodoList todoList){
         this.ListId = todoList.getListId();
         this.title = todoList.getTitle();
-        this.completed = todoList.isCompleted();
+        this.completed = todoList.getCompleted();
 
         this.url = "http://localhost:8081/" + this.ListId;
     }
