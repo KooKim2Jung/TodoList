@@ -1,14 +1,19 @@
 package org.todo.controllers.todo;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.todo.entities.TodoList;
 import org.todo.models.todo.TodoRequest;
 import org.todo.models.todo.TodoResponse;
 import org.todo.models.todo.TodoService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name="TodoList API")
 @CrossOrigin //CORS를 해결하기 위한 어노테이션
@@ -19,19 +24,12 @@ public class TodoController {
 
     private final TodoService service;
 
-    /**
-     *  대윤 피드백
-     *  할 일 추가 부분처럼 에러 처리를 하는 부분이 수정, 삭제, 조회에도 있으면 좋을 것 같음
-     *  에러 처리를 하는 과정에서도 상태 코드만 반환해주는 것이 아닌 에러 메세지를 출력하는 것이 좋음
-     *  이해와 수정 후 해당 주석 삭제해도 됨
-     */
-
     //할 일 추가
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TodoRequest request){
-        if (ObjectUtils.isEmpty(request.getTitle()))//ObjectUtils.isEmpty:null 체크와 isEmpty() 를 동시에 수행
-            return ResponseEntity.badRequest().build();//ResponseEntity:적절한 상태 코드와 응답 헤더 및 응답 본문을 생성해서 클라이언트에 전달
-
+        if (ObjectUtils.isEmpty(request.getTitle())) {//ObjectUtils.isEmpty:null 체크와 isEmpty() 를 동시에 수행
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'title'필드가 비어있습니다.");
+        }
         request.setCompleted(false);
 
         service.add(request);
@@ -42,28 +40,64 @@ public class TodoController {
     //할 일 수정
     @PutMapping("{listId}")
     public ResponseEntity<?> update(@PathVariable Long listId, @RequestBody TodoRequest request){
-        service.updateById(listId, request);
-
-        return ResponseEntity.ok().build();
+        try{
+            service.updateById(listId, request);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID의 Todo 항목을 찾을 수 없습니다.");
+        }
     }
 
     //삭제
     @DeleteMapping("{listId}")
     public ResponseEntity<?> deleteOne(@PathVariable Long listId){
-        service.deleteById(listId);
+        try{
+            service.deleteById(listId);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID의 Todo 항목을 찾을 수 없습니다.");
+        }
+    }
 
+    //한 일/할 일 전체 삭제
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@RequestParam(name = "completed", required = false) Boolean completed){
+        if(completed != null){
+            if(completed){
+                service.deleteAllCompleted();
+            }else{
+                service.deleteAllNotCompleted();
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "completed 파라미터가 필요합니다.");
+        }
         return ResponseEntity.ok().build();
     }
 
-    //한 일 전체 삭제
-    @DeleteMapping
-    public ResponseEntity<?> deleteAllCompleted(){
-        service.deleteAllCompleted();
-        return ResponseEntity.ok().build();
+    //한 일 불러오기
+    @GetMapping("/completed")
+    public ResponseEntity<List<TodoResponse>> readCompleted(){
+        List<TodoList> completedList = service.searchCompletedTrue();
+        if (completedList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "완료된 Todo 항목이 없습니다.");
+        }
+        //데이터베이스 엔티티 객체를 API 응답 개체로 변환
+        List<TodoResponse> response = completedList.stream() //TodoList 객체들의 리스트를 스림으로 변환
+                                                    .map(TodoResponse::new) //TodoList 객체의 리스트를 TodoResponse객체의 리스트로 변환
+                                                    .collect(Collectors.toList()); //스트림의 결과를 다시 리스트로 수집
+        return ResponseEntity.ok(response); //HTTP 상태코드 200 OK 상태와 함께 response객체를 응답 본문에 포함하여 반환
     }
 
     //할 일 불러오기
-
-    //한 일 불러오기
-
+    @GetMapping("/pending")
+    public ResponseEntity<List<TodoResponse>> readNotCompleted() {
+        List<TodoList> notCompletedList = service.searchCompletedFalse();
+        if (notCompletedList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "미완료된 Todo 항목이 없습니다.");
+        }
+        List<TodoResponse> response = notCompletedList.stream()
+                                                        .map(TodoResponse::new)
+                                                        .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
 }

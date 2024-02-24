@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TodoRepository extends JpaRepository<TodoList, Long> {
     List<TodoList> findByCompletedTrue();
+    List<TodoList> findByCompletedFalse();
 }
