@@ -7,35 +7,35 @@ services:
 #    depends_on:
 #      - mysqldb
 
-  mysqldb:
-    image: mysql:latest
-    environment:
-      MYSQL_DATABASE: 'todolist'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'rootpassword'
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysqldb-data:/var/lib/mysql
-
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    links:
-      - mysqldb
-    ports:
-      - 8080:80
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: mysqldb
-      PMA_PORT: 3306
-
-
-#  react:
-#    build: ./frontend/my-app
+#  mysqldb:
+#    image: mysql:latest
+#    environment:
+#      MYSQL_DATABASE: 'todolist'
+#      MYSQL_USER: 'user'
+#      MYSQL_PASSWORD: 'password'
+#      MYSQL_ROOT_PASSWORD: 'rootpassword'
 #    ports:
-#      - "3000:3000"
+#      - "3306:3306"
+#    volumes:
+#      - mysqldb-data:/var/lib/mysql
+#
+#  phpmyadmin:
+#    image: phpmyadmin
+#    restart: always
+#    links:
+#      - mysqldb
+#    ports:
+#      - 8080:80
+#    environment:
+#      PMA_ARBITRARY: 1
+#      PMA_HOST: mysqldb
+#      PMA_PORT: 3306
+
+
+  react:
+    build: ./frontend/my-app
+    ports:
+      - "3000:3000"
 #    depends_on:
 #      - spring
 
