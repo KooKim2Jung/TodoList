@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './SignUpForm.css'
+import axios from 'axios';
+import './SignUpForm.css';
 
 const SignUpForm = () => {
     const [user, setUser] = useState({
@@ -49,30 +49,39 @@ const SignUpForm = () => {
         return validated;
     }
 
-    const navigate = useNavigate();
-
-    const submitsignup = (event) => {
+    const submitSignup = async (event) => {
         event.preventDefault();
         if (validateForm()) {
-            navigate("/TodoList");
+            try {
+                const response = await axios.post('http://localhost:8080/api/v1/users/register', {
+                    email: user.email,
+                    password: user.passwd,
+                    phone: user.tel
+                });
+                console.log(response);
+                // 성공적인 응답 처리
+            } catch (error) {
+                console.error("회원가입 요청 오류", error);
+                // 오류 처리
+            }
         }
     };
 
     const submitUser = (e) => {
         const { name, value } = e.target;
         setUser(user => ({
-          ...user,
-          [name]: value,
+            ...user,
+            [name]: value,
         }));
-      };
+    };
 
     return (
         <div className='SignUp'>
             <h1>Sign Up</h1>
-            <form onSubmit={submitsignup}>
+            <form onSubmit={submitSignup}>
                 <label>기본 정보</label>
                 <div className='input-box'>
-                <div className='errormsg'>{emailError}</div>
+                    <div className='errormsg'>{emailError}</div>
                     <input 
                         type="email"
                         value={user.email}
@@ -83,7 +92,7 @@ const SignUpForm = () => {
                     />
                 </div>
                 <div className='input-box'>
-                <div className='errormsg'>{passwdError}</div>
+                    <div className='errormsg'>{passwdError}</div>
                     <input 
                         type="password"
                         value={user.passwd}
@@ -93,7 +102,7 @@ const SignUpForm = () => {
                     />
                 </div>
                 <div className='input-box'>
-                <div className='errormsg'>{passwdConfirmError}</div>
+                    <div className='errormsg'>{passwdConfirmError}</div>
                     <input 
                         type="password"
                         value={user.passwdConfirm}
@@ -104,7 +113,7 @@ const SignUpForm = () => {
                 </div>
                 <label>전화번호</label>
                 <div className='input-box'>
-                <div className='errormsg'>{telError}</div>
+                    <div className='errormsg'>{telError}</div>
                     <input
                         type="text"
                         value={user.tel}
