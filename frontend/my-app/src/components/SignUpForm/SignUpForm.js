@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './SignUpForm.css';
+import axiosConfig from './axiosConfig.js';
+
 
 const SignUpForm = () => {
     const [user, setUser] = useState({
@@ -53,10 +55,14 @@ const SignUpForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('http://localhost:8080/api/v1/users/register', {
+                const response = await axios.post('/api/v1/users/register', {
                     email: user.email,
                     password: user.passwd,
                     phone: user.tel
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
                 console.log(response);
                 // 성공적인 응답 처리
