@@ -15,7 +15,7 @@ const SignUpForm = () => {
     const [passwdConfirmError, setPasswdConfirmError] = useState('');
     const [telError, setTelError] = useState('');
 
-    const resetError = () => {
+    const resetForm = () => {
         setEmailError('');
         setPasswdError('');
         setPasswdConfirmError('');
@@ -23,7 +23,7 @@ const SignUpForm = () => {
     }
 
     const validateForm = () => {
-        resetError();
+        resetForm();
 
         let validated = true;
         if (!user.email) {
@@ -114,7 +114,7 @@ const SignUpForm = () => {
                         name="tel"
                     />
                 </div>
-                <button type="submit">회원가입</button>
+                <button className="sub-btn" type="submit">회원가입</button>
                 <div className='have-link'>
                     <p>계정이 있으신가요? <a href="/">로그인</a></p>
                 </div>

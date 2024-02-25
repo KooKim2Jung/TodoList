@@ -11,13 +11,13 @@ const LoginForm = () => {
     const [emailError, setEmailError] = useState('');
     const [passwdError, setPasswdError] = useState('');
 
-    const resetError = () => {
+    const resetForm = () => {
         setEmailError('');
         setPasswdError('');
     }
 
     const validateForm = () => {
-        resetError();
+        resetForm();
 
         let validated = true;
         if (!user.email) {
@@ -38,7 +38,6 @@ const LoginForm = () => {
         if (validateForm()) {
             navigate("/TodoList");
         }
-
     };
 
     const submitUser = (e) => {
@@ -77,7 +76,7 @@ const LoginForm = () => {
                 <div className="forgot-link">
                     <a href="#">비밀번호를 잊으셨나요?</a>
                 </div>
-                <button type="submit">로그인</button>
+                <button className="sub-btn" type="submit">로그인</button>
                 <div className="none-link">
                     <p>계정이 없으신가요? <a href="/SignUp">회원가입</a></p>
                 </div>
