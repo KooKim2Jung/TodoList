@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
 const LoginForm = () => {
@@ -31,12 +32,22 @@ const LoginForm = () => {
         return validated;
     }
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const submitLogin = (event) => {
+    const submitLogin = async (event) => {
         event.preventDefault();
         if (validateForm()) {
-            navigate("/TodoList");
+            try {
+                const response = await axios.post('http://localhost:8080/api/v1/users/login', {
+                    email: user.email,
+                    password: user.passwd,
+                });
+                console.log(response);
+                // 성공적인 응답 처리
+            } catch (error) {
+                console.error("로그인 요청 오류", error);
+                // 오류 처리
+            }
         }
     };
 
@@ -72,9 +83,6 @@ const LoginForm = () => {
                         placeholder='비밀번호' 
                         name="passwd"
                     />
-                </div>
-                <div className="forgot-link">
-                    <a href="#">비밀번호를 잊으셨나요?</a>
                 </div>
                 <button className="sub-btn" type="submit">로그인</button>
                 <div className="none-link">
