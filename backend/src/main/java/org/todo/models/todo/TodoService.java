@@ -1,25 +1,47 @@
 package org.todo.models.todo;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.todo.config.security.JwtTokenProvider;
+import org.todo.entities.Member;
 import org.todo.entities.TodoList;
 import org.todo.repositories.TodoRepository;
+import org.todo.repositories.UserRepository;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
+    public Member getMember(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        String userIdString = jwtTokenProvider.getUserPK(token);
+        int userId = Integer.parseInt(userIdString);
+
+        Optional<Member> member = userRepository.findById(userId);
+
+        return member.get();
+    }
     //TodoList 할 일 추가
-    public TodoList add(TodoRequest request){
-        TodoList todoList = new TodoList();
-        todoList.setTitle(request.getTitle());
-        todoList.setCompleted(request.getCompleted());
+    public TodoList add(TodoRequest todoRequest, HttpServletRequest request){
+        Member member = getMember(request);
+
+        TodoList todoList = TodoList.builder()
+                .member(member)
+                .title(todoRequest.getTitle())
+                .completed(todoRequest.getCompleted())
+                .build();
+
         return todoRepository.save(todoList);
     }
 

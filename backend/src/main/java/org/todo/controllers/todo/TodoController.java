@@ -2,6 +2,7 @@ package org.todo.controllers.todo;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,13 @@ public class TodoController {
 
     //할 일 추가
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody TodoRequest request){
+    public ResponseEntity<?> create(@RequestBody TodoRequest request, HttpServletRequest servletRequest){
         if (ObjectUtils.isEmpty(request.getTitle())) {//ObjectUtils.isEmpty:null 체크와 isEmpty() 를 동시에 수행
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'title'필드가 비어있습니다.");
         }
-        request.setCompleted(false);
+        service.add(request, servletRequest);
 
-        service.add(request);
+        request.setCompleted(false);
 
         return ResponseEntity.ok().build(); //ok():HTTP 상태코드 200을 가진 ResponseEntity 반환
     }
