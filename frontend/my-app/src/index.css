@@ -27,6 +27,10 @@ h1 {
   font-weight: bolder;
 }
 
+button {
+  cursor: pointer;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
