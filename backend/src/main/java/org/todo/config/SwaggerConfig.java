@@ -3,6 +3,8 @@ package org.todo.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +14,16 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo());
+                .components(new Components().addSecuritySchemes("bearer-key", securityScheme()))
+                .info(apiInfo())
+                .addSecurityItem(new SecurityRequirement().addList("bearer-key")); // 글로벌 보안 설정 추가
+    }
+
+    private SecurityScheme securityScheme() {
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
     }
 
     @Bean
@@ -23,6 +33,7 @@ public class SwaggerConfig {
                 .packagesToScan("org.todo.controllers")
                 .build();
     }
+
     private Info apiInfo() {
         return new Info()
                 .title("Springdoc 테스트")

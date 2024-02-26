@@ -24,14 +24,19 @@ public class TodoService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public Member getMember(HttpServletRequest request){
-        String token = request.getHeader("Authorization").substring(7);
-        String userIdString = jwtTokenProvider.getUserPK(token);
-        int userId = Integer.parseInt(userIdString);
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7); // "Bearer " 제거
+            String userIdString = jwtTokenProvider.getUserPK(token);
+            int userId = Integer.parseInt(userIdString);
 
-        Optional<Member> member = userRepository.findById(userId);
-
-        return member.get();
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Member not found"));
+        } else {
+            throw new RuntimeException("Authorization header is missing or invalid");
+        }
     }
+
     //TodoList 할 일 추가
     public TodoList add(TodoRequest todoRequest, HttpServletRequest request){
         Member member = getMember(request);
