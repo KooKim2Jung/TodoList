@@ -1,4 +1,4 @@
-FROM gradle:8.4-jdk21-alpine as build
+FROM --platform=linux/amd64 gradle:8.4-jdk21-alpine as build
 
 ENV APP_HOME=/apps
 
@@ -16,7 +16,7 @@ COPY src $APP_HOME/src
 
 RUN ./gradlew clean build -x check --parallel
 
-FROM openjdk:21
+FROM --platform=linux/amd64 openjdk:21
 
 ENV APP_HOME=/apps
 ARG ARTIFACT_NAME=app.jar
