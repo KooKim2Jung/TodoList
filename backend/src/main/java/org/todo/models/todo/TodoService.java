@@ -13,7 +13,6 @@ import org.todo.repositories.TodoRepository;
 import org.todo.repositories.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,26 +37,31 @@ public class TodoService {
     }
 
     //TodoList 할 일 추가
-    public TodoList add(TodoRequest todoRequest, HttpServletRequest request){
+    public TodoList add(TodoAddRequest addRequest, HttpServletRequest request){
         Member member = getMember(request);
 
         TodoList todoList = TodoList.builder()
                 .member(member)
-                .title(todoRequest.getTitle())
-                .completed(todoRequest.getCompleted())
+                .title(addRequest.getTitle())
                 .build();
 
         return todoRepository.save(todoList);
     }
 
     // 미완료된 TodoList 항목만 조회
-    public List<TodoList> searchCompletedFalse(){
-        return todoRepository.findByCompletedFalse();
+    public List<TodoList> searchCompletedFalse(HttpServletRequest request){
+        Member member = getMember(request);
+        int userId = member.getId();
+
+        return todoRepository.findByUserIdAndCompletedFalse(userId);
     }
 
     // 완료된 TodoList 항목만 조회
-    public List<TodoList> searchCompletedTrue(){
-        return todoRepository.findByCompletedTrue();
+    public List<TodoList> searchCompletedTrue(HttpServletRequest request){
+        Member member = getMember(request);
+        int userId = member.getId();
+
+        return todoRepository.findByUserIdAndCompletedTrue(userId);
     }
 
     //TodoList 목록 중 특정 아이템을 조회
@@ -83,14 +87,20 @@ public class TodoService {
     }
 
     //TodoList 한 일 전체 삭제
-    public void deleteAllCompleted(){
-        List<TodoList> completedTodos = todoRepository.findByCompletedTrue();
+    public void deleteAllCompleted(HttpServletRequest request){
+        Member member = getMember(request);
+        int userId = member.getId();
+
+        List<TodoList> completedTodos = todoRepository.findByUserIdAndCompletedTrue(userId);
         todoRepository.deleteAll(completedTodos);
     }
 
     //TodoList 할 일 전체 삭제
-    public void deleteAllNotCompleted(){
-        List<TodoList> notCompletedTodos = todoRepository.findByCompletedFalse();
+    public void deleteAllNotCompleted(HttpServletRequest request){
+        Member member = getMember(request);
+        int userId = member.getId();
+
+        List<TodoList> notCompletedTodos = todoRepository.findByUserIdAndCompletedFalse(userId);
         todoRepository.deleteAll(notCompletedTodos);
     }
 }
