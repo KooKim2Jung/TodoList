@@ -17,7 +17,7 @@ public class TodoList {
 
     @ManyToOne
     @JoinColumn(name = "id",nullable = false)
-    private User user;
+    private Member member;
 
     @Column(nullable = false, length = 500)
     private String title;
