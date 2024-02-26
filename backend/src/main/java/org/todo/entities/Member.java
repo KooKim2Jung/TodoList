@@ -11,11 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor // 매개변수가 없는 기본 생성자
 @AllArgsConstructor // 모든 필드를 매개변수로 갖는 생성자
 @Builder // 객체 생성할 때 유용하게 쓰이는데 아직 set 메소드만 이용했을 때와 비교해서 이점을 잘 모르겠음
-@Table(name="User") // 테이블 이름 지정
-public class User {
+@Table(name="Member") // 테이블 이름 지정
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     private String password;
