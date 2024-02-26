@@ -8,11 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name="Task")
 public class TodoList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //값을 따로 설정하지 않아도 1부터 1씩 자동으로 증가하며 저장
-    private int listId;
+    private Long listId;
 
     @ManyToOne
     @JoinColumn(name = "id",nullable = false)
@@ -22,5 +23,5 @@ public class TodoList {
     private String title;
 
     @Column(nullable = false)
-    private boolean iscompleted;
+    private Boolean completed;
 }
