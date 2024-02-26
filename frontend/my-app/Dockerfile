@@ -14,9 +14,6 @@ COPY . /app
 # 애플리케이션 빌드
 RUN npm run build
 
-# Nginx를 사용하여 빌드된 애플리케이션 서비스
-FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 3000
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
