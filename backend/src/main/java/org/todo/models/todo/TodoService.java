@@ -53,7 +53,7 @@ public class TodoService {
         Member member = getMember(request);
         int userId = member.getId();
 
-        return todoRepository.findByUserIdAndCompletedFalse(userId);
+        return todoRepository.findByMemberIdAndCompletedFalse(userId);
     }
 
     // 완료된 TodoList 항목만 조회
@@ -61,7 +61,7 @@ public class TodoService {
         Member member = getMember(request);
         int userId = member.getId();
 
-        return todoRepository.findByUserIdAndCompletedTrue(userId);
+        return todoRepository.findByMemberIdAndCompletedTrue(userId);
     }
 
     //TodoList 목록 중 특정 아이템을 조회
@@ -91,7 +91,7 @@ public class TodoService {
         Member member = getMember(request);
         int userId = member.getId();
 
-        List<TodoList> completedTodos = todoRepository.findByUserIdAndCompletedTrue(userId);
+        List<TodoList> completedTodos = todoRepository.findByMemberIdAndCompletedTrue(userId);
         todoRepository.deleteAll(completedTodos);
     }
 
@@ -100,7 +100,7 @@ public class TodoService {
         Member member = getMember(request);
         int userId = member.getId();
 
-        List<TodoList> notCompletedTodos = todoRepository.findByUserIdAndCompletedFalse(userId);
+        List<TodoList> notCompletedTodos = todoRepository.findByMemberIdAndCompletedFalse(userId);
         todoRepository.deleteAll(notCompletedTodos);
     }
 }
