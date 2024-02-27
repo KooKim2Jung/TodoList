@@ -1,12 +1,7 @@
 .TodoList {
     width: 700px;
     font-size: 20px;
-}
-
-.todo-title {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
+    margin-bottom: 30px;
 }
 
 .todo-title a {
@@ -17,6 +12,12 @@
 .todo-title a:hover {
     color:#fff;
     text-decoration: underline;
+}
+
+.title-item {
+    text-align:center;
+    padding-left: 350px;
+    margin: -40px 0px 30px 0px;
 }
 
 .TodoList .errormsg {
@@ -60,7 +61,7 @@
 .TodoList .add-btn {
     position: relative;
     height: 51px;
-    top: 3px;
+    top: 2px;
 }
 
 .TodoList .save-btn {

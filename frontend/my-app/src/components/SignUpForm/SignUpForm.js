@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './SignUpForm.css';
 
 const SignUpForm = () => {
@@ -7,19 +8,22 @@ const SignUpForm = () => {
         email: "",
         passwd: "",
         passwdConfirm: "",
-        tel: ""
+        nickName: "",
+        phone: ""
     });
 
     const [emailError, setEmailError] = useState('');
     const [passwdError, setPasswdError] = useState('');
     const [passwdConfirmError, setPasswdConfirmError] = useState('');
-    const [telError, setTelError] = useState('');
+    const [nickNameError, setNickNameError] = useState('');
+    const [phoneError, setPhoneError] = useState('');
 
     const resetForm = () => {
         setEmailError('');
         setPasswdError('');
         setPasswdConfirmError('');
-        setTelError('');
+        setNickNameError('');
+        setPhoneError('');
     }
 
     const validateForm = () => {
@@ -42,12 +46,18 @@ const SignUpForm = () => {
             setPasswdConfirmError('비밀번호가 일치하지 않습니다.');
             validated = false;
         }
-        if (!user.tel) {
-            setTelError('전화번호를 입력해주세요.');
+        if (!user.nickName) {
+            setNickNameError('닉네임을 입력해주세요.');
+            validated = false;
+        }
+        if (!user.phone) {
+            setPhoneError('전화번호를 입력해주세요.');
             validated = false;
         }
         return validated;
     }
+
+    const navigate = useNavigate();
 
     const submitSignup = async (event) => {
         event.preventDefault();
@@ -56,10 +66,12 @@ const SignUpForm = () => {
                 const response = await axios.post('http://localhost:8080/api/v1/users/register', {
                     email: user.email,
                     password: user.passwd,
-                    phone: user.tel
+                    nickName: user.nickName,
+                    phone: user.phone
                 });
                 console.log(response);
                 // 성공적인 응답 처리
+                navigate('/TodoList');
             } catch (error) {
                 console.error("회원가입 요청 오류", error);
                 // 오류 처리
@@ -111,24 +123,32 @@ const SignUpForm = () => {
                         name="passwdConfirm"
                     />
                 </div>
+                <div className='input-box'>
+                    <div className='errormsg'>{nickNameError}</div>
+                    <input 
+                        type="text"
+                        value={user.nickname}
+                        onChange={submitUser}
+                        placeholder='닉네임' 
+                        name="ninkName"
+                    />
+                </div>
                 <label>전화번호</label>
                 <div className='input-box'>
-                    <div className='errormsg'>{telError}</div>
+                    <div className='errormsg'>{phoneError}</div>
                     <input
                         type="text"
-                        value={user.tel}
+                        value={user.phone}
                         onChange={submitUser}
                         pattern="\d*" minlength="10" maxlength="11"
                         placeholder='010-1234-5678 ( &lsquo;-&rsquo; 없이 입력 )' 
-                        name="tel"
+                        name="phone"
                     />
                 </div>
                 <button className="sub-btn" type="submit">회원가입</button>
                 <div className='have-link'>
                     <p>계정이 있으신가요? <a href="/">로그인</a></p>
                 </div>
-                <span className="naver-link">네이버로 로그인 </span>
-                <span className="kakao-link">카카오톡으로 로그인</span>
             </form>
         </div>
     );

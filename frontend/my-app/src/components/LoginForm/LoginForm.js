@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
 const LoginForm = () => {
@@ -32,7 +32,7 @@ const LoginForm = () => {
         return validated;
     }
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const submitLogin = async (event) => {
         event.preventDefault();
@@ -44,6 +44,8 @@ const LoginForm = () => {
                 });
                 console.log(response);
                 // 성공적인 응답 처리
+                navigate('/TodoList');
+
             } catch (error) {
                 console.error("로그인 요청 오류", error);
                 // 오류 처리
@@ -88,8 +90,6 @@ const LoginForm = () => {
                 <div className="none-link">
                     <p>계정이 없으신가요? <a href="/SignUp">회원가입</a></p>
                 </div>
-                <span className="naver-link">네이버로 로그인 </span>
-                <span className="kakao-link">카카오톡으로 로그인</span>
             </form>
         </div>
     );

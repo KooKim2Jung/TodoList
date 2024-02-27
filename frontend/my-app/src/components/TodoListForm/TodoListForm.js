@@ -67,6 +67,14 @@ const TodoListForm = () => {
         setCompletedList(updatedCompletedList);
     };
 
+    const removeAllItems = (listType) => {
+        if (listType === "todoList") {
+            setTodoList([]);
+        } else if (listType === "completedList") {
+            setCompletedList([]);
+        }
+    };
+
     return (
         <div className="TodoList">
             <TodoList/>
@@ -85,10 +93,12 @@ const TodoListForm = () => {
                     <div className='todo-underdone'>
                         <h2>할 일</h2>
                         <TodoListBoard todoList={todoList} removeItem={removeItem} completeItem={completeItem} editItem={editItem} />
+                        <button onClick={() => removeAllItems("todoList")}>전체 삭제</button>
                     </div>
                     <div className='todo-done'>
                         <h2>완료된 항목</h2>
                         <TodoListBoard todoList={completedList} removeItem={removeItem} revertItem={revertItem} editItem={editItem} />
+                        <button onClick={() => removeAllItems("completedList")}>전체 삭제</button>
                     </div>
                 </div>
             </form>
