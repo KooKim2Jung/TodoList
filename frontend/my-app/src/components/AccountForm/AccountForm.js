@@ -123,7 +123,8 @@ const AccountForm = () => {
                         type="text"
                         value={user.phone}
                         onChange={(submitUser)}
-                        placeholder='전화번호' 
+                        pattern="\d*" minlength="10" maxlength="11"
+                        placeholder='010-1234-5678 ( &lsquo;-&rsquo; 없이 입력 )'
                         name="phone"
                     />
                 </div>
