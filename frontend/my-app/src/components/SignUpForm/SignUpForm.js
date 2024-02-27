@@ -127,10 +127,10 @@ const SignUpForm = () => {
                     <div className='errormsg'>{nickNameError}</div>
                     <input 
                         type="text"
-                        value={user.nickname}
+                        value={user.nickName}
                         onChange={submitUser}
                         placeholder='닉네임' 
-                        name="ninkName"
+                        name="nickName"
                     />
                 </div>
                 <label>전화번호</label>
