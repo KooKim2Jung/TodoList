@@ -2,7 +2,6 @@
 HELP.md
 .gradle
 caches
-wrapper
 daemon
 native
 jdks
