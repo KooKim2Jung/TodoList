@@ -31,12 +31,12 @@ services:
       PMA_HOST: mysqldb
       PMA_PORT: 3306
 
-  react:
-    build: ./frontend/my-app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - spring
+#  react:
+#    build: ./frontend/my-app
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - spring
 
 
 

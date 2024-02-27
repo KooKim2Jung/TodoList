@@ -23,5 +23,5 @@ public class TodoList {
     private String title;
 
     @Column(nullable = false)
-    private Boolean completed;
+    private Boolean completed = false;
 }

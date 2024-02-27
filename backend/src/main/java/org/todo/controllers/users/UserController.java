@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,8 @@ import org.todo.config.security.JwtTokenProvider;
 import org.todo.entities.Member;
 import org.todo.models.users.UserLoginDto;
 import org.todo.models.users.UserRegisterDto;
+import org.todo.models.users.UserService;
+import org.todo.models.users.UserUpdateDto;
 import org.todo.repositories.UserRepository;
 
 import java.util.Collections;
@@ -27,6 +30,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Operation(summary = "회원가입", description = "새로운 사용자를 등록")
     @ApiResponse(responseCode = "200", description = "회원가입 성공!",
@@ -35,12 +39,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@RequestBody UserRegisterDto userRegisterDto) {
         try {
-            userRepository.save(Member.builder()
-                    .email(userRegisterDto.getEmail())
-                    .password(passwordEncoder.encode(userRegisterDto.getPassword()))
-                    .nickname(userRegisterDto.getNickname())
-                    .phone(userRegisterDto.getPhone())
-                    .build());
+            userService.registerNewUser(userRegisterDto);
             Map<String, String> response = Collections.singletonMap("message", "회원가입 성공!");
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
@@ -71,6 +70,25 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "수정", description = "회원 정보 수정")
+    @ApiResponse(responseCode = "200", description = "수정 완료!",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = String.class))})
+    @PutMapping("/")
+    public ResponseEntity<Map<String, String>> update(@RequestBody UserUpdateDto userUpdateDto, HttpServletRequest request) {
+        try {
+            userService.updateUser(userUpdateDto, request);
+            Map<String, String> response = Collections.singletonMap("message", "수정 완료!");
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(Collections.singletonMap("message", e.getReason()));
+        }
+    }
+
+
 
 
 }

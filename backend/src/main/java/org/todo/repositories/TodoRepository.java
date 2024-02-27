@@ -8,6 +8,6 @@ import java.util.List;
 // JpaRepository<대상으로 지정할 엔티티, 해당 엔티티 id의 필드 타입>
 @Repository
 public interface TodoRepository extends JpaRepository<TodoList, Long> {
-    List<TodoList> findByCompletedTrue();
-    List<TodoList> findByCompletedFalse();
+    List<TodoList> findByMemberIdAndCompletedFalse(int userId);
+    List<TodoList> findByMemberIdAndCompletedTrue(int userId);
 }
