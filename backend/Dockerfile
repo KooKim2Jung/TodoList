@@ -10,6 +10,13 @@ COPY gradle $APP_HOME/gradle
 
 RUN chmod +x gradlew
 
+# dos2unix 설치
+RUN apk add --no-cache dos2unix
+
+# gradlew 파일의 line endings 변환
+RUN dos2unix gradlew
+
+
 RUN ./gradlew build || return 0
 
 COPY src $APP_HOME/src
