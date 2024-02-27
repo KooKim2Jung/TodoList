@@ -12,7 +12,6 @@ const AccountForm = () => {
         phone: ""
     });
 
-    const [emailEroor, setEmailError] = useState('');
     const [passwdError, setPasswdError] = useState('');
     const [passwdConfirmError, setPasswdConfirmError] = useState('');
     const [nickNameError, setNickNameError] = useState('');
@@ -23,7 +22,6 @@ const AccountForm = () => {
         setPasswdConfirmError('');
         setPhoneError('');
         setNickNameError('');
-        setEmailError('');
     }
 
     const validateForm = () => {
@@ -96,6 +94,7 @@ const AccountForm = () => {
                         value={user.nickName} 
                         onChange={(submitUser)}
                         placeholder='닉네임' 
+                        name="nickName"
                     />
                 </div>
                 <div className='input-box'>
