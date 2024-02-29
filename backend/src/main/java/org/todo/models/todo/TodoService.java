@@ -43,6 +43,7 @@ public class TodoService {
         TodoList todoList = TodoList.builder()
                 .member(member)
                 .title(addRequest.getTitle())
+                .completed(false)
                 .build();
 
         return todoRepository.save(todoList);
