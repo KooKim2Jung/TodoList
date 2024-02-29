@@ -18,6 +18,8 @@ import org.todo.models.todo.TodoAddRequest;
 import org.todo.models.todo.TodoRequest;
 import org.todo.models.todo.TodoResponse;
 import org.todo.models.todo.TodoService;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,17 +34,21 @@ public class TodoController {
 
     //할 일 추가
     @Operation(summary = "할 일 추가", description = "새로운 할 일을 추가합니다.")
-    @ApiResponse(responseCode = "200", description = "할 일 추가 성공",
+    @ApiResponse(responseCode = "201", description = "할 일 추가 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ResponseEntity.class)))
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TodoAddRequest addRequest, HttpServletRequest Request){
-        if (ObjectUtils.isEmpty(addRequest.getTitle())) {//ObjectUtils.isEmpty:null 체크와 isEmpty() 를 동시에 수행
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'title'필드가 비어있습니다.");
+        if (ObjectUtils.isEmpty(addRequest.getTitle())) { //ObjectUtils.isEmpty:null 체크와 isEmpty() 를 동시에 수행
+            return ResponseEntity.badRequest().body("'title' 필드가 비어있습니다."); //400 상태 코드와 함께 에러 메시지를 반환
         }
-        service.add(addRequest, Request);
-
-        return ResponseEntity.ok().build(); //ok():HTTP 상태코드 200을 가진 ResponseEntity 반환
+        try {
+            service.add(addRequest, Request);
+            return ResponseEntity.status(HttpStatus.CREATED).build(); //클라이언트에게 새 리소스가 성공적으로 생성되었다는 것을 201 Created 상태 코드로 알리는 응답을 반환
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("할 일을 추가하는 동안 오류가 발생했습니다.");
+        }
     }
 
     //할 일 수정
@@ -54,7 +60,7 @@ public class TodoController {
     public ResponseEntity<?> update(@PathVariable Long listId, @RequestBody TodoRequest request){
         try{
             service.updateById(listId, request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build(); //ok():HTTP 상태코드 200을 가진 ResponseEntity 반환
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID의 Todo 항목을 찾을 수 없습니다.");
         }
@@ -100,16 +106,17 @@ public class TodoController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = List.class)))
     @GetMapping("/completed")
-    public ResponseEntity<List<TodoResponse>> readCompleted(HttpServletRequest request){
+    public ResponseEntity<?> readCompleted(HttpServletRequest request){
         List<TodoList> completedList = service.searchCompletedTrue(request);
         if (completedList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "완료된 Todo 항목이 없습니다.");
+            return ResponseEntity.ok(Collections.singletonMap("message", "완료된 Todo 항목이 없습니다."));
+        } else {
+            //데이터베이스 엔티티 객체를 API 응답 개체로 변환
+            List<TodoResponse> response = completedList.stream() //TodoList 객체들의 리스트를 스림으로 변환
+                    .map(TodoResponse::new) //TodoList 객체의 리스트를 TodoResponse객체의 리스트로 변환
+                    .collect(Collectors.toList()); //스트림의 결과를 다시 리스트로 수집
+            return ResponseEntity.ok(response); //HTTP 상태코드 200 OK 상태와 함께 response객체를 응답 본문에 포함하여 반환
         }
-        //데이터베이스 엔티티 객체를 API 응답 개체로 변환
-        List<TodoResponse> response = completedList.stream() //TodoList 객체들의 리스트를 스림으로 변환
-                                                    .map(TodoResponse::new) //TodoList 객체의 리스트를 TodoResponse객체의 리스트로 변환
-                                                    .collect(Collectors.toList()); //스트림의 결과를 다시 리스트로 수집
-        return ResponseEntity.ok(response); //HTTP 상태코드 200 OK 상태와 함께 response객체를 응답 본문에 포함하여 반환
     }
 
     //할 일 불러오기
@@ -118,14 +125,15 @@ public class TodoController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = List.class)))
     @GetMapping("/pending")
-    public ResponseEntity<List<TodoResponse>> readNotCompleted(HttpServletRequest request) {
+    public ResponseEntity<?> readNotCompleted(HttpServletRequest request) {
         List<TodoList> notCompletedList = service.searchCompletedFalse(request);
         if (notCompletedList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "미완료된 Todo 항목이 없습니다.");
-        }
+            return ResponseEntity.ok(Collections.singletonMap("message", "미완료된 Todo 항목이 없습니다."));
+        } else{
         List<TodoResponse> response = notCompletedList.stream()
                                                         .map(TodoResponse::new)
                                                         .collect(Collectors.toList());
         return ResponseEntity.ok(response);
+        }
     }
 }
