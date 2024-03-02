@@ -9,12 +9,7 @@ const TodoListItem = ({ item, removeItem, completeItem, editItem }) => {
     const handleRemove = async (event) => {
         event.stopPropagation(); // 클릭 이벤트 전파 방지
         try {
-            const response = await fetch(`/v1/todos/${item.id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok) {
-                throw new Error('Failed to delete item.');
-            }
+            await api.delete(`/v1/todos/${item.id}`);
             removeItem(item.id);
         } catch (error) {
             console.error('Error deleting item:', error.message);
@@ -34,20 +29,11 @@ const TodoListItem = ({ item, removeItem, completeItem, editItem }) => {
     };
 
     const handleSave = async (event) => {
-        event.stopPropagation(); // 이벤트 버블링 방지 추가
+        event.stopPropagation(); // 이벤트 버블링 방지
         try {
-            const response = await fetch(`/v1/todos/${item.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: editText
-                })
+            await api.put(`/v1/todos/${item.id}`, {
+                title: editText
             });
-            if (!response.ok) {
-                throw new Error('Failed to save item.');
-            }
             editItem(item.id, editText); // 수정된 내용을 전달하여 editItem 호출
             setIsEditing(false); // 수정 모드 종료
         } catch (error) {
@@ -55,7 +41,7 @@ const TodoListItem = ({ item, removeItem, completeItem, editItem }) => {
             // 오류 발생 시 필요한 처리 작업 추가
         }
     };
-
+    
     const handleInputChange = (event) => {
         setEditText(event.target.value);
     };

@@ -39,7 +39,7 @@ const LoginForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('/v1/users/login', {
+                const response = await api.post('/v1/users/login', {
                     email: user.email,
                     password: user.passwd,
                 });

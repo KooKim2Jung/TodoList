@@ -64,7 +64,7 @@ const SignUpForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('/v1/users/register', {
+                const response = await api.post('/v1/users/register', {
                     email: user.email,
                     password: user.passwd,
                     nickname: user.nickname,

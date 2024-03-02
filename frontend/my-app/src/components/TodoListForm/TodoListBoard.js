@@ -1,7 +1,6 @@
 import React from 'react';
 import TodoListItem from './TodoListItem';
 import './TodoListForm.css';
-import api from '../../services/api';
 
 const TodoListBoard = ({ todoList, removeItem, completeItem, revertItem, editItem }) => {
     return (
