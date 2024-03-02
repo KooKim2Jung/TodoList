@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
@@ -38,7 +39,7 @@ const LoginForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('http://localhost:8081/api/v1/users/login', {
+                const response = await axios.post('/v1/users/login', {
                     email: user.email,
                     password: user.passwd,
                 });

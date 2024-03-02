@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../services/api';
 import './AccountForm.css'
 
 const AccountForm = () => {
@@ -57,7 +58,7 @@ const AccountForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.put('http://localhost:8081/api/v1/users', {
+                const response = await axios.put('/v1/users', {
                     nicmname: user.nicmname,
                     password: user.passwd,
                 });
@@ -81,7 +82,7 @@ const AccountForm = () => {
 
       const fetchUserData = async () => {
         try {
-            const response = await axios.get('http://localhost:8081/api/v1/users');
+            const response = await axios.get('/v1/users');
             const userData = response.data;
             setUser({
                 ...user,
@@ -104,7 +105,7 @@ const AccountForm = () => {
       const deleteUser = async () => {
         try {
             // DELETE 요청을 보내고 응답을 기다립니다.
-            await axios.delete('http://localhost:8081/api/v1/users');
+            await axios.delete('/v1/users');
             // 성공적인 응답을 받은 경우 '/' 페이지로 이동합니다.
             navigate('/');
         } catch (error) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios'; 
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import '../../src/components/TodoListForm/TodoListForm.css';
 
@@ -7,7 +8,7 @@ const TodoList = () => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            const response = await axios.post('http://localhost:8081/api/v1/users/logout');
+            const response = await api.post('/v1/users/logout');
             console.log(response);
             navigate('/');
         } catch (error) {

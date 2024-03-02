@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TodoListBoard from './TodoListBoard';
 import TodoList from '../../pages/TodoList';
 import './TodoListForm.css';
+import api from '../../services/api';
 
 const TodoListForm = () => {
     const [inputValue, setInputValue] = useState('');
@@ -15,20 +16,11 @@ const TodoListForm = () => {
 
     const addItem = async () => {
         try {
-            const response = await fetch('http://localhost:8081/api/v1/todos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: inputValue,
-                    iscompleted: false 
-                })
+            const response = await api.post('/v1/todos', {
+                title: inputValue,
+                iscompleted: false
             });
-            if (!response.ok) {
-                throw new Error('Failed to add item.');
-            }
-            const newItem = await response.json();
+            const newItem = response.data;
             setTodoList([...todoList, newItem]);
             setInputValue('');
         } catch (error) {
@@ -88,7 +80,7 @@ const TodoListForm = () => {
 
     const removeAllItems = async (listType) => {
         try {
-            let endpoint = 'http://localhost:8081/api/v1/todos';
+            let endpoint = '/v1/todos';
             if (listType === "todoList") {
                 endpoint += '?completed=false';
             } else if (listType === "completedList") {
@@ -97,13 +89,7 @@ const TodoListForm = () => {
                 return;
             }
     
-            const response = await fetch(endpoint, {
-                method: 'DELETE'
-            });
-    
-            if (!response.ok) {
-                throw new Error('Failed to delete items.');
-            }
+            await api.delete(endpoint);
     
             if (listType === "todoList") {
                 setTodoList([]);
@@ -119,36 +105,28 @@ const TodoListForm = () => {
     useEffect(() => {
         const fetchPendingTodos = async () => {
             try {
-                const response = await fetch('http://localhost:8081/api/v1/todos/pending');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch pending todos.');
-                }
-                const data = await response.json();
-                setTodoList(data);
+                const response = await api.get('/v1/todos/pending');
+                setTodoList(response.data);
             } catch (error) {
                 console.error('Error fetching pending todos:', error.message);
                 // 오류 처리
             }
         };
-
+    
         const fetchCompletedTodos = async () => {
             try {
-                const response = await fetch('http://localhost:8081/api/v1/todos/completed');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch completed todos.');
-                }
-                const data = await response.json();
-                setCompletedList(data);
+                const response = await api.get('/v1/todos/completed');
+                setCompletedList(response.data);
             } catch (error) {
                 console.error('Error fetching completed todos:', error.message);
                 // 오류 처리
             }
         };
-
-
+    
         fetchPendingTodos();
         fetchCompletedTodos();
     }, []);
+    
 
     return (
         <div className="TodoList">
