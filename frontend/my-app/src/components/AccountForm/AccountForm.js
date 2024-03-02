@@ -8,28 +8,28 @@ const AccountForm = () => {
         email: "",
         passwd: "",
         passwdConfirm: "",
-        nickName: "",
+        nicmname: "",
         phone: ""
     });
 
     const [passwdError, setPasswdError] = useState('');
     const [passwdConfirmError, setPasswdConfirmError] = useState('');
-    const [nickNameError, setNickNameError] = useState('');
+    const [nicmnameError, setnicmnameError] = useState('');
     const [phoneError, setPhoneError] = useState('');
 
     const resetError = () => {
         setPasswdError('');
         setPasswdConfirmError('');
         setPhoneError('');
-        setNickNameError('');
+        setnicmnameError('');
     }
 
     const validateForm = () => {
         resetError();
 
         let validated = true;
-        if (!user.nickName) {
-            setNickNameError('닉네임을 입력해주세요.');
+        if (!user.nicmname) {
+            setnicmnameError('닉네임을 입력해주세요.');
             validated = false;
         }
         if (!user.passwd) {
@@ -58,7 +58,7 @@ const AccountForm = () => {
         if (validateForm()) {
             try {
                 const response = await axios.put('http://localhost:8081/api/v1/users', {
-                    nickname: user.nickName,
+                    nicmname: user.nicmname,
                     password: user.passwd,
                 });
                 // 응답 처리
@@ -86,7 +86,7 @@ const AccountForm = () => {
             setUser({
                 ...user,
                 email: userData.email,
-                nickName: userData.nickname, // 여기서 "nickname"은 API 응답의 필드명에 따라 다를 수 있습니다.
+                nicmname: userData.nicmname, // 여기서 "nicmname"은 API 응답의 필드명에 따라 다를 수 있습니다.
                 // 다른 필드도 필요하다면 여기에 추가
             });
         } catch (error) {
@@ -127,13 +127,13 @@ const AccountForm = () => {
                     />
                 </div>
                 <div className='input-box'>
-                <div className='errormsg'>{nickNameError}</div>
+                <div className='errormsg'>{nicmnameError}</div>
                     <input 
                         type="text" 
-                        value={user.nickName} 
+                        value={user.nicmname} 
                         onChange={(submitUser)}
                         placeholder='닉네임' 
-                        name="nickName"
+                        name="nicmname"
                     />
                 </div>
                 <div className='input-box'>
