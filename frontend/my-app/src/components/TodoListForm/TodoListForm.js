@@ -13,21 +13,6 @@ const TodoListForm = () => {
         setInputError('');
     };
 
-    // const submitItem = (event) => {
-    //     resetForm();
-    //     event.preventDefault();
-    //     inputValue ? addItem(inputValue) : setInputError("추가된 일정이 없습니다.");
-    // };
-
-    // const addItem = () => {
-    //     const newItem = {
-    //         id: Date.now(),
-    //         text: inputValue,
-    //     };
-    //     setTodoList([...todoList, newItem]);
-    //     setInputValue('');
-    // };
-
     const addItem = async () => {
         try {
             const response = await fetch('api/v1/todos', {
@@ -159,6 +144,7 @@ const TodoListForm = () => {
                 // 오류 처리
             }
         };
+
 
         fetchPendingTodos();
         fetchCompletedTodos();

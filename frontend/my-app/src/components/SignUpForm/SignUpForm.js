@@ -8,21 +8,21 @@ const SignUpForm = () => {
         email: "",
         passwd: "",
         passwdConfirm: "",
-        nickName: "",
+        nickname: "",
         phone: ""
     });
 
     const [emailError, setEmailError] = useState('');
     const [passwdError, setPasswdError] = useState('');
     const [passwdConfirmError, setPasswdConfirmError] = useState('');
-    const [nickNameError, setNickNameError] = useState('');
+    const [nicknameError, setnicknameError] = useState('');
     const [phoneError, setPhoneError] = useState('');
 
     const resetForm = () => {
         setEmailError('');
         setPasswdError('');
         setPasswdConfirmError('');
-        setNickNameError('');
+        setnicknameError('');
         setPhoneError('');
     }
 
@@ -46,8 +46,8 @@ const SignUpForm = () => {
             setPasswdConfirmError('비밀번호가 일치하지 않습니다.');
             validated = false;
         }
-        if (!user.nickName) {
-            setNickNameError('닉네임을 입력해주세요.');
+        if (!user.nickname) {
+            setnicknameError('닉네임을 입력해주세요.');
             validated = false;
         }
         if (!user.phone) {
@@ -66,7 +66,7 @@ const SignUpForm = () => {
                 const response = await axios.post('http://localhost:8081/api/v1/users/register', {
                     email: user.email,
                     password: user.passwd,
-                    nickName: user.nickName,
+                    nickname: user.nickname,
                     phone: user.phone
                 });
                 console.log(response);
@@ -124,13 +124,13 @@ const SignUpForm = () => {
                     />
                 </div>
                 <div className='input-box'>
-                    <div className='errormsg'>{nickNameError}</div>
+                    <div className='errormsg'>{nicknameError}</div>
                     <input 
                         type="text"
-                        value={user.nickName}
+                        value={user.nickname}
                         onChange={submitUser}
                         placeholder='닉네임' 
-                        name="nickName"
+                        name="nickname"
                     />
                 </div>
                 <label>전화번호</label>
