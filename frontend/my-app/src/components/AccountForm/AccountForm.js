@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AccountForm.css'
@@ -53,10 +53,21 @@ const AccountForm = () => {
 
     const navigate = useNavigate();
 
-    const submitEdit = (event) => {
+    const submitEdit = async (event) => {
         event.preventDefault();
         if (validateForm()) {
-            navigate("/TodoList");
+            try {
+                const response = await axios.put('http://localhost:8080/api/v1/users', {
+                    nickname: user.nickName,
+                    password: user.passwd,
+                });
+                // 응답 처리
+                console.log(response.data);
+                navigate("/TodoList"); // 성공 시 이동할 경로
+            } catch (error) {
+                console.error("회원 정보 수정 오류", error);
+                // 오류 처리
+            }
         }
     };
 
@@ -67,6 +78,28 @@ const AccountForm = () => {
           [name]: value,
         }));
       };
+
+      const fetchUserData = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/v1/users');
+            const userData = response.data;
+            setUser({
+                ...user,
+                email: userData.email,
+                nickName: userData.nickname, // 여기서 "nickname"은 API 응답의 필드명에 따라 다를 수 있습니다.
+                // 다른 필드도 필요하다면 여기에 추가
+            });
+        } catch (error) {
+            console.error("사용자 데이터 불러오기 오류", error);
+            // 오류 처리
+        }
+    };
+
+    // 컴포넌트가 마운트될 때 사용자 정보를 불러옵니다.
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
 
       const deleteUser = async () => {
         try {
@@ -84,8 +117,14 @@ const AccountForm = () => {
         <div className='Account'>
             <h1>Account</h1>
             <form onSubmit={submitEdit}>
-            <div className='email-box'>
-                <div>이메일</div>
+                <div className='input-box'>
+                    <input 
+                        type="email" 
+                        value={user.email} 
+                        onChange={(submitUser)}
+                        name="email"
+                        disabled
+                    />
                 </div>
                 <div className='input-box'>
                 <div className='errormsg'>{nickNameError}</div>

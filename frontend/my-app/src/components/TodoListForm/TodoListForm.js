@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoListBoard from './TodoListBoard';
 import TodoList from '../../pages/TodoList';
 import './TodoListForm.css';
@@ -13,19 +13,53 @@ const TodoListForm = () => {
         setInputError('');
     };
 
-    const submitItem = (event) => {
-        resetForm();
-        event.preventDefault();
-        inputValue ? addItem(inputValue) : setInputError("추가된 일정이 없습니다.");
+    // const submitItem = (event) => {
+    //     resetForm();
+    //     event.preventDefault();
+    //     inputValue ? addItem(inputValue) : setInputError("추가된 일정이 없습니다.");
+    // };
+
+    // const addItem = () => {
+    //     const newItem = {
+    //         id: Date.now(),
+    //         text: inputValue,
+    //     };
+    //     setTodoList([...todoList, newItem]);
+    //     setInputValue('');
+    // };
+
+    const addItem = async () => {
+        try {
+            const response = await fetch('api/v1/todos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: inputValue,
+                    iscompleted: false 
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to add item.');
+            }
+            const newItem = await response.json();
+            setTodoList([...todoList, newItem]);
+            setInputValue('');
+        } catch (error) {
+            console.error('Error adding item:', error.message);
+            setInputError('일정 추가에 실패했습니다.');
+        }
     };
 
-    const addItem = () => {
-        const newItem = {
-            id: Date.now(),
-            text: inputValue,
-        };
-        setTodoList([...todoList, newItem]);
-        setInputValue('');
+    const submitItem = async (event) => {
+        resetForm();
+        event.preventDefault();
+        if (inputValue) {
+            await addItem();
+        } else {
+            setInputError("추가된 일정이 없습니다.");
+        }
     };
 
     const removeItem = (id) => {
@@ -67,13 +101,68 @@ const TodoListForm = () => {
         setCompletedList(updatedCompletedList);
     };
 
-    const removeAllItems = (listType) => {
-        if (listType === "todoList") {
-            setTodoList([]);
-        } else if (listType === "completedList") {
-            setCompletedList([]);
+    const removeAllItems = async (listType) => {
+        try {
+            let endpoint = 'api/v1/todos';
+            if (listType === "todoList") {
+                endpoint += '?completed=false';
+            } else if (listType === "completedList") {
+                endpoint += '?completed=true';
+            } else {
+                return;
+            }
+    
+            const response = await fetch(endpoint, {
+                method: 'DELETE'
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to delete items.');
+            }
+    
+            if (listType === "todoList") {
+                setTodoList([]);
+            } else if (listType === "completedList") {
+                setCompletedList([]);
+            }
+        } catch (error) {
+            console.error('Error deleting items:', error.message);
+            setInputError('일정 삭제에 실패했습니다.');
         }
     };
+
+    useEffect(() => {
+        const fetchPendingTodos = async () => {
+            try {
+                const response = await fetch('api/v1/todos/pending');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch pending todos.');
+                }
+                const data = await response.json();
+                setTodoList(data);
+            } catch (error) {
+                console.error('Error fetching pending todos:', error.message);
+                // 오류 처리
+            }
+        };
+
+        const fetchCompletedTodos = async () => {
+            try {
+                const response = await fetch('api/v1/todos/completed');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch completed todos.');
+                }
+                const data = await response.json();
+                setCompletedList(data);
+            } catch (error) {
+                console.error('Error fetching completed todos:', error.message);
+                // 오류 처리
+            }
+        };
+
+        fetchPendingTodos();
+        fetchCompletedTodos();
+    }, []);
 
     return (
         <div className="TodoList">
