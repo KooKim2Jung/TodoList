@@ -63,7 +63,7 @@ const SignUpForm = () => {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const response = await axios.post('http://localhost:8080/api/v1/users/register', {
+                const response = await axios.post('http://localhost:8081/api/v1/users/register', {
                     email: user.email,
                     password: user.passwd,
                     nickName: user.nickName,
