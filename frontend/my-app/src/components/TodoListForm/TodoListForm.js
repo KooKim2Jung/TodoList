@@ -15,7 +15,7 @@ const TodoListForm = () => {
 
     const addItem = async () => {
         try {
-            const response = await fetch('api/v1/todos', {
+            const response = await fetch('http://localhost:8081/api/v1/todos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ const TodoListForm = () => {
 
     const removeAllItems = async (listType) => {
         try {
-            let endpoint = 'api/v1/todos';
+            let endpoint = 'http://localhost:8081/api/v1/todos';
             if (listType === "todoList") {
                 endpoint += '?completed=false';
             } else if (listType === "completedList") {
@@ -119,7 +119,7 @@ const TodoListForm = () => {
     useEffect(() => {
         const fetchPendingTodos = async () => {
             try {
-                const response = await fetch('api/v1/todos/pending');
+                const response = await fetch('http://localhost:8081/api/v1/todos/pending');
                 if (!response.ok) {
                     throw new Error('Failed to fetch pending todos.');
                 }
@@ -133,7 +133,7 @@ const TodoListForm = () => {
 
         const fetchCompletedTodos = async () => {
             try {
-                const response = await fetch('api/v1/todos/completed');
+                const response = await fetch('http://localhost:8081/api/v1/todos/completed');
                 if (!response.ok) {
                     throw new Error('Failed to fetch completed todos.');
                 }

@@ -8,7 +8,7 @@ const TodoListItem = ({ item, removeItem, completeItem, editItem }) => {
     const handleRemove = async (event) => {
         event.stopPropagation(); // 클릭 이벤트 전파 방지
         try {
-            const response = await fetch(`api/v1/todos/${item.id}`, {
+            const response = await fetch(`http://localhost:8081/api/v1/todos/${item.id}`, {
                 method: 'DELETE'
             });
             if (!response.ok) {
@@ -35,7 +35,7 @@ const TodoListItem = ({ item, removeItem, completeItem, editItem }) => {
     const handleSave = async (event) => {
         event.stopPropagation(); // 이벤트 버블링 방지 추가
         try {
-            const response = await fetch(`api/v1/todos/${item.id}`, {
+            const response = await fetch(`http://localhost:8081/api/v1/todos/${item.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
