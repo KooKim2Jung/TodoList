@@ -119,6 +119,7 @@ const TodoListForm = () => {
                 setCompletedList(response.data);
             } catch (error) {
                 console.error('Error fetching completed todos:', error.message);
+                setTodoList([]);
                 // 오류 처리
             }
         };
